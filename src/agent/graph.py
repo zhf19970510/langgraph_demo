@@ -1,54 +1,28 @@
-"""LangGraph single-node graph template.
+from langchain_openai import ChatOpenAI
+from langgraph.prebuilt import create_react_agent
 
-Returns a predefined response. Replace logic and configuration as needed.
-"""
+# 本地私有化部署的大模型
+llm = ChatOpenAI(
+    model='qwen3-8b',
+    temperature=0.8,
+    api_key='xx',
+    base_url="http://localhost:6006/v1",
+    extra_body={'chat_template_kwargs': {'enable_thinking': False}},
+)
 
-from __future__ import annotations
+# llm = ChatOpenAI(
+#     model='deepseek-chat',
+#     temperature=0.8,
+#     api_key="sk-YBLKX7wJEJ8wuFUWGujP8Iw13GneZhEZDCVaz6Rivv9ps9wy",
+#     base_url="https://xiaoai.plus/v1"
+# )
 
-from dataclasses import dataclass
-from typing import Any, Dict
+def get_weather(city: str) -> str:
+    """Get weather for a given city."""
+    return f"城市：{city}，今天的天气晴朗，气温在28摄氏度！"
 
-from langgraph.graph import StateGraph
-from langgraph.runtime import Runtime
-from typing_extensions import TypedDict
-
-
-class Context(TypedDict):
-    """Context parameters for the agent.
-
-    Set these when creating assistants OR when invoking the graph.
-    See: https://langchain-ai.github.io/langgraph/cloud/how-tos/configuration_cloud/
-    """
-
-    my_configurable_param: str
-
-
-@dataclass
-class State:
-    """Input state for the agent.
-
-    Defines the initial structure of incoming data.
-    See: https://langchain-ai.github.io/langgraph/concepts/low_level/#state
-    """
-
-    changeme: str = "example"
-
-
-async def call_model(state: State, runtime: Runtime[Context]) -> Dict[str, Any]:
-    """Process input and returns output.
-
-    Can use runtime context to alter behavior.
-    """
-    return {
-        "changeme": "output from call_model. "
-        f"Configured with {(runtime.context or {}).get('my_configurable_param')}"
-    }
-
-
-# Define the graph
-graph = (
-    StateGraph(State, context_schema=Context)
-    .add_node(call_model)
-    .add_edge("__start__", "call_model")
-    .compile(name="New Graph")
+graph = create_react_agent(
+    llm,
+    tools=[get_weather],
+    prompt="你是一个智能助手"
 )
