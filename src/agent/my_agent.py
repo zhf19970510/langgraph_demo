@@ -1,22 +1,37 @@
+from langchain_core.messages import AnyMessage
+from langchain_core.runnables import RunnableConfig
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
+from langgraph.prebuilt.chat_agent_executor import AgentState
 
+from agent.my_llm import llm
+from agent.my_state import CustomState
 from agent.tools.tool_demo3 import calculate3
 from agent.tools.tool_demo4 import calculate4
 from agent.tools.tool_demo6 import runnable_tool
 from agent.tools.tool_demo7 import MySearchTool
+from agent.tools.tool_demo8 import get_user_info_by_name
+from agent.tools.tool_demo9 import get_user_name, greet_user
 
 # 创建一个网络搜索的工具
 search_tool = MySearchTool()
 
+# 提示词模板的函数: 由用户传入内容，组成一个动态的系统提示词
+def prompt(state: AgentState, config: RunnableConfig) -> list[AnyMessage]:
+    user_name = config['configurable'].get('user_name', 'zs')
+    print(user_name)
+    system_message = f'你是一个智能助手，尽可能的调用工具回答用户的问题，当前用户的名字是: {user_name}'
+    return [{'role': 'system', 'content': system_message}] + state['messages']
+
+
 # 本地私有化部署的大模型
-llm = ChatOpenAI(
-    model='qwen3-8b',
-    temperature=0.8,
-    api_key='xx',
-    base_url="http://localhost:6006/v1",
-    extra_body={'chat_template_kwargs': {'enable_thinking': True}},
-)
+# llm = ChatOpenAI(
+#     model='qwen3-8b',
+#     temperature=0.8,
+#     api_key='xx',
+#     base_url="http://localhost:6006/v1",
+#     extra_body={'chat_template_kwargs': {'enable_thinking': True}},
+# )
 
 # llm = ChatOpenAI(
 #     model='deepseek-chat',
@@ -31,8 +46,10 @@ llm = ChatOpenAI(
 
 graph = create_react_agent(
     llm,
-    tools=[calculate4, runnable_tool, search_tool],
-    prompt="你是一个智能助手"
+    # tools=[calculate4, runnable_tool, search_tool, get_user_info_by_name],
+    tools=[calculate4, runnable_tool, search_tool, get_user_name, greet_user],
+    prompt=prompt,
+    state_schema=CustomState,  # 指定自定义状态类
 )
 
 # 以 graph.invoke 的方式执行智能体，不需要按照严格的目录结构、但是如果以 langgraph dev : 把智能体部署到Fast API,必须严格按照langgraph的目录结构来

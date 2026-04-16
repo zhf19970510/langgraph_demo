@@ -21,5 +21,5 @@ for chunk in client.runs.stream(
     # print(f"Receiving new event of type: {chunk.event}...")
     # print(chunk.data)
     if isinstance(chunk.data, list) and 'type' in chunk.data[0] and chunk.data[0]['type'] == 'AIMessageChunk':
-        print(chunk.data[0]['content'], end='|')
+        print(chunk.data[0]['content'], end='')
 

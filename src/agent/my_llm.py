@@ -3,20 +3,20 @@ from langchain_openai import ChatOpenAI
 from agent.env_utils import LOCAL_BASE_URL, DEEPSEEK_API_KEY, DEEPSEEK_BASE_URL, OPENAI_API_KEY, OPENAI_BASE_URL
 
 # openai的大模型
-# llm = ChatOpenAI(
-#     model='gpt-4o-mini',
-#     temperature=0.8,
-#     api_key=OPENAI_API_KEY,
-#     base_url=OPENAI_BASE_URL,
-# )
+llm = ChatOpenAI(
+    model='gpt-4o-mini',
+    temperature=0.8,
+    api_key=OPENAI_API_KEY,
+    base_url=OPENAI_BASE_URL,
+)
 
 # deepseek大模型
-llm = ChatOpenAI(
-    model='deepseek-chat',
-    temperature=0.8,
-    api_key='sk-YBLKX7wJEJ8wuFUWGujP8Iw13GneZhEZDCVaz6Rivv9ps9wy',
-    base_url='https://xiaoai.plus/v1'
-)
+# llm = ChatOpenAI(
+#     model='deepseek-chat',
+#     temperature=0.8,
+#     api_key='sk-YBLKX7wJEJ8wuFUWGujP8Iw13GneZhEZDCVaz6Rivv9ps9wy',
+#     base_url='https://xiaoai.plus/v1'
+# )
 
 #  claude 的大模型调用
 # llm = ChatOpenAI(

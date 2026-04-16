@@ -7,6 +7,23 @@ import asyncio
 
 client = get_client(url="http://localhost:2024")  # 接口地址
 
+# async def main():
+#     async for chunk in client.runs.stream(
+#         None,  # Threadless run
+#         "agent", # Name of assistant. Defined in langgraph.json.
+#         input={
+#         "messages": [{
+#             "role": "human",
+#             # "content": "给当前用户一个祝福语",
+#             "content": "北京今天的天气怎么样",
+#             }],
+#         },
+#         # config={"configurable": {"user_name": "老肖"}}
+#     ):
+#         print(f"Receiving new event of type: {chunk.event}...")
+#         print(chunk.data)
+#         print("\n\n")
+
 async def main():
     async for chunk in client.runs.stream(
         None,  # Threadless run
@@ -14,11 +31,10 @@ async def main():
         input={
         "messages": [{
             "role": "human",
-            # "content": "给当前用户一个祝福语",
-            "content": "北京今天的天气怎么样",
+            "content": "给当前用户一个祝福语",
             }],
         },
-        # config={"configurable": {"user_name": "老肖"}}
+        config={"configurable": {"user_name": "老肖"}}
     ):
         print(f"Receiving new event of type: {chunk.event}...")
         print(chunk.data)
