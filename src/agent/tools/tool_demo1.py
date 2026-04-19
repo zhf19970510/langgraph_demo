@@ -22,8 +22,8 @@ def calculate1(a: float, b: float, operation: str) -> float:
 
     return result
 
-print(calculate1.name)
-print(calculate1.description)
-print(calculate1.args)
-print(calculate1.return_direct)
-print(calculate1.args_schema.model_json_schema())
+# print(calculate1.name)
+# print(calculate1.description)
+# print(calculate1.args)
+# print(calculate1.return_direct)
+# print(calculate1.args_schema.model_json_schema())
